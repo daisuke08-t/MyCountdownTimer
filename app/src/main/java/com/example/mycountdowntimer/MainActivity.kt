@@ -4,6 +4,9 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.View
+import android.widget.AdapterView
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mycountdowntimer.databinding.ActivityMainBinding
 
@@ -55,7 +58,35 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.spinner.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener{
+
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        timer.cancel()
+                        binding.playStop.setImageResource(
+                                R.drawable.ic_baseline_play_arrow_24
+                        )
+
+                        val spinner = parent as? Spinner
+                        val item = spinner?.selectedItem as? String
+                        item?.let {
+                            if (it.isNotEmpty()) binding.timerText.text = it
+                            val items = it.split(":")
+                            val min = items[0].toLong()
+                            val sec = items[1].toLong()
+                            timer = MyCountDownTimer((min * 60 + sec) * 1000, 100)
+                        }
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+
+                }
     }
+
+
 
     override fun onResume() {
         super.onResume()
