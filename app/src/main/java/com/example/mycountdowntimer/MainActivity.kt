@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.AdapterView
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mycountdowntimer.databinding.ActivityMainBinding
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                         binding.playStop.setImageResource(
                                 R.drawable.ic_baseline_play_arrow_24
                         )
-
+                        timer.isRunning = false
                         val spinner = parent as? Spinner
                         val item = spinner?.selectedItem as? String
                         item?.let {
@@ -84,6 +86,30 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
+
+        binding.seekBar.setOnSeekBarChangeListener(
+                object : OnSeekBarChangeListener{
+                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                        timer.cancel()
+                        binding.playStop.setImageResource(
+                                R.drawable.ic_baseline_play_arrow_24
+                        )
+                        timer.isRunning = false
+                        val min = progress / 60L
+                        val sec = progress % 60L
+                        binding.timerText.text = "%1d:%2$02d".format(min, sec)
+                        timer = MyCountDownTimer(progress * 1000L, 100)
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+                    }
+                }
+        )
     }
 
 
